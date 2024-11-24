@@ -51,7 +51,7 @@ const FileDropComponent = ({ onFilesDropped ,setStudentCourses}) => {
           "Content-Type": "multipart/form-data", // Explicitly set for Axios
         },
       });
-  
+      console.log(response.data)
 
       setStudentCourses(response.data);
     } catch (error) {

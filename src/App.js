@@ -5,7 +5,9 @@ import StudentCourses from './components/StudentCourses';
 import WeeklySchedule from './components/WeeklySchedule';
 
 function App() {
-  const [studentCourses,setStudentCourses] = useState(null)
+  const [studentCourses,setStudentCourses] = useState({
+    needed:[],token:[]
+  })
   const handleFilesDropped = (files) => {
     files.forEach((file) => {
       console.log('File:', file.name);
@@ -18,16 +20,16 @@ function App() {
 
       <FileDropComponent setStudentCourses={setStudentCourses} onFilesDropped={handleFilesDropped} />
 
-      <StudentCourses studentCourses={studentCourses} />
+      <StudentCourses setStudentCourses={setStudentCourses} studentCourses={studentCourses} />
 
       <div style={{width:"100%",height:"2px",background:"black",margin:"10px"}}></div>
 
       <h1>Student courses schedule</h1>
-       {/*
+      
        <div style={{width:"100%",height:"100vh"}}>
        <WeeklySchedule/>
        </div>
-       */}
+    
     </div>
   );
 }
