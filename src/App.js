@@ -1,23 +1,27 @@
-import logo from './logo.svg';
 import './App.css';
+import FileDropComponent from './components/FileDropComponent';
+import WeeklySchedule from './components/WeeklySchedule';
 
 function App() {
+  const handleFilesDropped = (files) => {
+    files.forEach((file) => {
+      console.log('File:', file.name);
+    });
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App" style={{display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column"}}>
+      <h1> Upload student evaluation </h1>
+
+      <FileDropComponent onFilesDropped={handleFilesDropped} />
+
+      <div style={{width:"100%",height:"2px",background:"black",margin:"10px"}}></div>
+
+      <h1>Student courses schedule</h1>
+       
+       <div style={{width:"100%",height:"100vh"}}>
+       <WeeklySchedule/>
+       </div>
     </div>
   );
 }
