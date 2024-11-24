@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import axios from 'axios';
 
-const FileDropComponent = ({ onFilesDropped }) => {
+const FileDropComponent = ({ onFilesDropped ,setStudentCourses}) => {
   const [files, setFiles] = useState([]); // To store uploaded file metadata
-
+  const [uploadedFile,setUploadedFile] = useState(null);
   const onDrop = useCallback((acceptedFiles) => {
     console.log('Dropped files:', acceptedFiles);
 
@@ -30,8 +31,41 @@ const FileDropComponent = ({ onFilesDropped }) => {
     setFiles((prev) => prev.filter((file) => file.name !== fileName));
   };
 
+  const handleFileUpload = async(e) => {
+
+    let file = (e.target.file.files[0])
+    e.preventDefault();
+    
+    console.log(file)
+    if (!file) {
+      alert("Please select a file first!");
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append("file", file); // The key 'file' must match Flask's expected key
+  
+    try {
+      const response = await axios.post("http://127.0.0.1:5000/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Explicitly set for Axios
+        },
+      });
+  
+
+      setStudentCourses(response.data);
+    } catch (error) {
+      console.error("Error uploading file:", error.response || error);
+      alert(`Error: ${error.response?.data || error.message}`);
+    }
+  };
+
   return (
     <div style={{ textAlign: 'center' }}>
+      <form onSubmit={handleFileUpload} method="POST" enctype="multipart/form-data"> 
+        <input type="file" name="file" multiple /> 
+        <input type = "submit" value="Upload"/> 
+    </form> 
       {/* Drag and Drop Area */}
       <div
         {...getRootProps()}
@@ -92,6 +126,23 @@ const FileDropComponent = ({ onFilesDropped }) => {
                 }}
               >
                 Remove
+              </button>
+              <button
+              onClick={()=>{
+                  handleFileUpload(file);
+              }}
+              style={{
+                borderRadius:3,
+                margin:10,
+                background:"lightgreen",
+                padding:5,
+                border:"none",
+                outline:"none",
+                color:'white'
+                
+              }}
+              >
+                Process
               </button>
             </li>
           ))}
