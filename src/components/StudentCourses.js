@@ -1,122 +1,113 @@
 import { useState } from "react"
 
 export default function StudentCourses({studentCourses,setStudentCourses}){
-    const [page,setPage] = useState(0)
+  
+    const [onlyWinter,setOnlyWinter] = useState(false);
+    const [onlyMetPre , setOnlyMetPre] = useState(false);
      let {needed,token} = studentCourses
- 
-    const nextPage=()=>{
-        if((page+1)*10<needed.length){
-            setPage(page+1);
-        }
-    }
-    const prevPage=()=>{
-        if(page>0){
-            setPage(page-1);
-        }
-    }
+     const flatted=[]
+   
+     for(let need of needed){
 
-    const tablePage=(page)=>{
-        const arr=needed.filter((ele,index)=>{
-            return index>page*10 && index<(page+1)*10
-        })
-
-        return arr.map(element=>{
-           let details;
-           if(element.details instanceof Array){
-              if(element.details[0] instanceof Array){
-                details = element.details[0]
-              }else{
-                details = element.details
-              }
-           }
-           if(details.length==0){
-            return <tr>
-                <td>{element.name}</td>
-                <td>❌</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-            </tr>
-           }
-           return <tr>
-                <td>{element.name}</td>
-                <td>✅</td>
-                <td>{details[2]}</td>
-                <td>{details[4]}</td>
-                <td>{details[3]=="None"?"No":"Yes"}</td>
-            </tr>
-        })
-    }
-
-    const SortBasedOnAvaibility=()=>{
-        let newObject ={...studentCourses}
-       newObject.token = [...newObject.token]
-       newObject.token.sort((a,b)=>{
-
+      for(let el of need){
        
-        let details1;
-        if(a.details instanceof Array){
-           if(a.details[0] instanceof Array){
-             details1 = a.details[0]
-           }else{
-             details1 = a.details
-           }
+        let name = el.name
+        let details = el.details
+       
+
+        if(details.length==0){
+          flatted.push([name,"-","-","-","-","-","-"])
+          continue
         }
 
-        let details2;
-        if(b.details instanceof Array){
-           if(b.details[0] instanceof Array){
-             details2 = b.details[0]
-           }else{
-             details2 = b.details
-           }
-        }     
+    
         
-        console.log("a"+JSON.stringify(a))
-        console.log("b"+details2)
-        return 1
-        return details1.length-details2.length
-       })
-       setStudentCourses(newObject)
+        for(let row of details){
+          flatted.push([name,...row])
+          
+        }
+
+     
+      }
+      
+     }
+
+   
+    
+ 
+ 
+
+    const tablePage=()=>{
+     
+      const arr =  flatted.filter(element=>{
+         return element[1] !== "-" || !onlyWinter
+      }).filter(element=>{
+        const met_pre = element[6];
+        const has_pre = element[4] !== "None"
+        return !onlyMetPre || (!has_pre || met_pre)
+      })
+      
+      arr.sort((a,b)=>{
+        let code1 = Number(a[0].split(" ")[1])
+        let code2 = Number(b[0].split(" ")[1])
+        
+        return code1-code2
+
+      })
+      return arr.map(element=>{   
+    const course_code  = element[0]
+    const course_name = element[3];
+    const course_times = element[5];
+    const met_pre = element[6];
+    const has_pre = element[4] !== "None"
+    const available_winter = element[1] !== "-"
+       
+
+      return  <tr>
+        <td>{course_code}</td>
+        <td>{available_winter?"✅":"x"}</td>
+        <td>{course_name}</td>
+        <td>{course_times}</td>
+        <td>{has_pre?"Yes":"No"}</td>
+        <td>{(!has_pre || met_pre)?"Yes":"No"}</td>
+        
+    </tr>
+      })
+  
     }
+
+    
     
     if(!studentCourses){
         return <></>
     }
    
     needed = needed.flat()
+    
     return <div>
         <h1>Student courses</h1>
-<div style={{display:"flex",flexDirection:"column",alignItems:"start",justifyContent:"center",gap:10}}>
-      <div>
-       <button onClick={prevPage}>Prev</button>
-       <span>{page}</span>
-       <button onClick={nextPage}>Next</button>
-      </div>
-      <table>
+<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:10}}>
+    
+      <div style={{cursor:"pointer",border:"2px solid grey",padding:5,borderRadius:5,background:"lightgreen"}} onClick={()=>{
+        setOnlyWinter(!onlyWinter)
+      }}> {onlyWinter?"Show all course":"Keep only winter semeter"}</div>
+
+<div style={{cursor:"pointer",border:"2px solid grey",padding:5,borderRadius:5,background:"lightgreen"}} onClick={()=>{
+       
+       setOnlyMetPre(!onlyMetPre)
+      }}> {onlyMetPre?"Show all courses":"Keep only satisfied"}</div>
+      <table style={{height:500}}>
         <tr>
             <th>Course Code </th>
-            <th onClick={SortBasedOnAvaibility}>Available in Winter 2024 </th>
+            <th>Available in Winter 2024 </th>
             <th>Subject</th>
             <th>Times</th>
             <th>Has prerequisite?</th>
+            <th>Satisfied pre-requisite</th>
         </tr>
-        {tablePage(page)}
+        {tablePage()}
       </table>
-    {/*
-      <table>
-        <tr>
-            <th>Token course</th>
-            <th>Grade</th>
-        </tr>
-        {token.map(element=>{
-            return <tr>
-                <td>{element.course}</td>
-                <td>{element.grade}</td>
-            </tr>
-        })}
-      </table>
-      */}
+   
     </div>
     </div>
 }

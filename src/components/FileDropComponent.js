@@ -6,7 +6,6 @@ const FileDropComponent = ({ onFilesDropped ,setStudentCourses}) => {
   const [files, setFiles] = useState([]); // To store uploaded file metadata
   const [uploadedFile,setUploadedFile] = useState(null);
   const onDrop = useCallback((acceptedFiles) => {
-    console.log('Dropped files:', acceptedFiles);
 
     const newFiles = acceptedFiles.map((file) => ({
       name: file.name,
@@ -36,7 +35,7 @@ const FileDropComponent = ({ onFilesDropped ,setStudentCourses}) => {
     let file = (e.target.file.files[0])
     e.preventDefault();
     
-    console.log(file)
+
     if (!file) {
       alert("Please select a file first!");
       return;
@@ -51,7 +50,6 @@ const FileDropComponent = ({ onFilesDropped ,setStudentCourses}) => {
           "Content-Type": "multipart/form-data", // Explicitly set for Axios
         },
       });
-      console.log(response.data)
 
       setStudentCourses(response.data);
     } catch (error) {
