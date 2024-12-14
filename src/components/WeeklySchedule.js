@@ -5,6 +5,7 @@ import axios from "axios"
 import { useState,useEffect,useRef } from "react";
 const server_end_point = "http://127.0.0.1:5000/data"
 const server_end_point_courses = "http://127.0.0.1:5000/courses"
+
 const colors = [
   "#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#FFC300", "#DAF7A6", "#581845", "#900C3F",
   "#C70039", "#FF5733", "#FFC300", "#DAF7A6", "#33FF57", "#33FFF5", "#8D33FF", "#338DFF",
@@ -16,6 +17,7 @@ const colors = [
   "#DA57FF", "#A6DAFF", "#F0A6FF", "#A6DAF7", "#FFD7A6", "#57DAF7", "#A6DAFF", "#A6D7FF",
   "#FFD7DA", "#DAF7DA", "#FFD7DA", "#F0A6DA", "#FFD7A6", "#F0D7DA", "#FFF7DA", "#F0A6FA", "#F5D7A6", "#F027DA", "#C02CDC"
 ];
+
 function convertTo24HourFormat(timeString) {
   if(timeString.trim()==="") return "00:00"
   timeString = timeString.trim()
@@ -38,10 +40,12 @@ function convertTo24HourFormat(timeString) {
 
   return `${formattedHours}:${formattedMinutes}`;
 }
-const WeeklySchedule = () => {
+const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
+  setAllEvents,setEventsList,selected,setSelected,selected_years,setSelectedYears}) => {
   const calendarRef = useRef(null);
-  const [selected,setSelected]=useState([0])
-  const [selected_years,setSelectedYears]=useState([1,2,3,4,5])
+
+
+  const [loadedEvents,setLoadedEvents] = useState([])
 
   const moveToDate = (date) => {
     // Use the FullCalendar instance to navigate to a specific date
@@ -58,71 +62,29 @@ const WeeklySchedule = () => {
     "Saturday":"2024-11-23",
     "Sunday":"2024-11-24"
   }
-  const [events,setEvents] = useState([])
-  const [all_events,setAllEvents] = useState([])
-  const [courses, setCourses]= useState([])
 
-  async function loadEvents(){
-    let {data} =await axios.get(server_end_point)
  
-   
-    //data = data.filter((element,index)=>index<50)
-    setAllEvents(data)
-    let selected_courses = courses.filter((item,index)=>{
-      return selected.find(item=>item==index)
-    })
-
-    
-    data = data.filter(element=>{
-      let sub = element[1].split(" ")[0]
-
-      
-      let selected_obj = selected_courses.find(item=>item.key.toLowerCase()==sub.toLowerCase())
-    let year = Number(element[1].split(" ")[1][0])
-    if(selected_obj && selected_years.find(item=>item==year)){
-      return true
-    }
-
-
-    })
-    let arr_elements = []
-    data.forEach((element,index)=>{
-      let title = element[2]
-      let time = element.at(-1).split(",")
-      let days= time[0].split("-")
-      for(let day of days){
-      day = day.trim()
   
-  
-      let day_date = days_dic[day]
-      let times = time[1].split("-")
-      let [start,end] =times
-      start= convertTo24HourFormat(start)
-      end = convertTo24HourFormat(end)
-      let start_date = day_date+"T"+start
-      let end_date = day_date+"T"+end
-         
-      let sub = element[1].split(" ")[0]
-      let index2 =  courses.findIndex(el=>el.key==sub)
-    
-      arr_elements.push({
-        title:title,
-        start:start_date,
-        end:end_date,
-        color:colors[index2]
-      })
-    }
-    })
-    setEvents(arr_elements);
+ 
+ 
+  const updateSelection = ()=>{
+    setEventsList(loadedEvents)
+  }
+  async function loadEvents(){
+    let {data} = await axios.get(server_end_point);
+    setLoadedEvents(data);
+    setEventsList(data);
   }
 
   async function loadCourses(){
     let {data} =await axios.get(server_end_point_courses)
+
+    console.log(data);
     data =[{value:"all",key:"all"},...data]
     setCourses(data)
   }
   useEffect(()=>{
-    loadEvents()
+   // updateSelection()
   },[selected,selected_years])
   useEffect(()=>{
    
@@ -131,16 +93,20 @@ const WeeklySchedule = () => {
     loadCourses()
   },[])
 
+ 
+
 
   function countElements(events,value){
   
     if(value==="all") return all_events.length
     let counter  = 0 
     for(let ele of all_events){
+      if(ele[1]){
       let sub = ele[1].split(" ")[0].toLowerCase()
       if(sub==value.toLowerCase()) {
         counter +=1;
      }
+    }
 
     }
     
@@ -201,6 +167,8 @@ const WeeklySchedule = () => {
       
       <div style={{width:"20%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
        {courses.map((item,index)=>{
+        let count = countElements(events,item.key)
+        if(count>0){
         return <div style={{display:"flex",justifyContent:"start",alignItems:"center",gap:10,width:"100%"}}>
           
         
@@ -216,6 +184,8 @@ const WeeklySchedule = () => {
           <div style={{width:15,height:15,background:colors[index]}}></div>
         
         </div>
+      }
+      return <></>
       
 })}
           
