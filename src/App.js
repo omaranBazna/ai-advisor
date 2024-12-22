@@ -3,6 +3,8 @@ import './App.css';
 import FileDropComponent from './components/FileDropComponent';
 import StudentCourses from './components/StudentCourses';
 import WeeklySchedule from './components/WeeklySchedule';
+
+import BasicTreeView from './components/BasicTreeView';
 function convertTo24HourFormat(timeString) {
   if(timeString.trim()==="") return "00:00"
   timeString = timeString.trim()
@@ -129,7 +131,7 @@ return [1,el["course_code"],el["course_name"],"None",el["course_times"]]
   setAllEvents(elements);
 
   }
-
+  return <BasicTreeView/>
   return (
     <div className="App" style={{display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column"}}>
       <h1> Upload student evaluation </h1>
