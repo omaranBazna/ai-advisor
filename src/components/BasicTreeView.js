@@ -69,7 +69,7 @@ export default function BasicTreeView(){
     },[])
   
 
-    const putEventInSchedule = (code,subject,time)=>{
+    const putEventInSchedule = (code,subject,time,credits)=>{
         time = time.split(",")
         let days= time[0].split("-")
         for(let day of days){
@@ -91,6 +91,7 @@ export default function BasicTreeView(){
                 title:`${code} - ${subject}`,
                 start:start_date,
                 end:end_date,
+                credits
             }]
         })
       
@@ -124,6 +125,57 @@ export default function BasicTreeView(){
       return timesArr
     }
     
+  
+    const checkSingleCourse=async(val)=>{
+        
+     return await fetch("http://127.0.0.1:5000/check_course",{
+            method:"POST",
+            headers:{
+            'content-type':"application/json",
+            },
+            body:JSON.stringify({data:val,token})
+        }).then(res=>{
+            return res.json();
+        }).then(res=>{
+    
+           
+      
+           return res?.rows?.length>0
+        })
+      }
+    
+
+  const filterAreas = async(areas)=>{
+ 
+    let newAreas = []
+    for(let area of areas){
+        let newArea={
+            caption:area.caption,
+        }
+        let courses = area.courses;
+        
+        let newCourses= []
+        for(let course of courses){
+           
+            course = course.trim()
+            let regex = /^\b[A-Z]{2,4}\s+\d{4}\b$/;
+            if (regex.test(course)) {
+                
+                let result = await checkSingleCourse(course)
+                console.log(course)
+                console.log(result);
+                if(result){
+                    newCourses.push(course);
+                }
+                
+            }else newCourses.push(course);
+        }
+        newArea.courses = newCourses
+        newAreas.push(newArea)
+    }
+    return newAreas
+
+  }
   const handleFileUpload = async(e) => {
 
     let file = (e.target.file.files[0])
@@ -149,6 +201,9 @@ export default function BasicTreeView(){
       let areas = response.data.areas.filter(item=>item.courses&&item.courses.length>0);
       areas.shift()
       areas.shift()
+
+      areas =await filterAreas(areas)
+     
       
     setToken(response.data.token);
       setFolder((old)=>{
@@ -167,7 +222,8 @@ export default function BasicTreeView(){
     }
   };
 
-  const checkCourse=()=>{
+  const checkCourse=(val)=>{
+    setAttr("")
     fetch("http://127.0.0.1:5000/check_course",{
         method:"POST",
         headers:{
@@ -184,7 +240,8 @@ export default function BasicTreeView(){
     })
   }
 
-  const checkSection=()=>{
+  const checkSection=(attr)=>{
+    setVal("")
     fetch("http://127.0.0.1:5000/check_attr",{
         method:"POST",
         headers:{
@@ -239,7 +296,53 @@ export default function BasicTreeView(){
     return (IsTimeInBetween(start1,start2,end2) || IsTimeInBetween(end1,start2,end2) || IsTimeInBetween(start2,start1,end1) || IsTimeInBetween(end2,start1,end1)) 
 
   }
+
+  const totalCredits=()=>{
+    let dict={}
+    let total=0
+    for(let event of events){
+
+        if(!dict[event.code]){
+            dict[event.code]=true;
+            total +=event.credits
+        }
+    }
+    return total
+  }
   
+   const addLinks= (text)=>{
+    
+    const att_regex = /\[(.*?)\]/g;
+    const replacedText = text.replace(att_regex,(match,p1)=>{
+        return `|_${p1}|`
+    })
+
+    const course_regex = /\b[A-Z]{2,4}\s+\d{4}\b/g;
+    const replacedText2 = replacedText.replace(course_regex,(match,p1)=>{
+        return `|+${match}|`
+    })
+
+    const arr = replacedText2.split("|")
+
+
+    return arr.map(element=>{
+        if(element[0]=="_"){
+            element=element.substring(1)
+            return <span className="hoverable" onClick={()=>{
+                setAttr(element)
+                checkSection(element)
+            }} style={{color:"red"}}>{element}</span>
+        }else if(element[0]=="+"){
+            element=element.substring(1)
+            return <span className="hoverable" onClick={()=>{
+                setVal(element)
+                checkCourse(element)
+            }} style={{color:"green"}}>{element}</span>
+        }
+        return <span>{element}</span>
+    })
+   }
+   
 
     return   <div style={{height:1000}}>
         <form onSubmit={handleFileUpload} method="POST" enctype="multipart/form-data"> 
@@ -252,14 +355,14 @@ export default function BasicTreeView(){
     onChange={(e)=>{
      setVal(e.target.value.toUpperCase().trim())
     }} placeholder="checkcourse" style={{fontSize:25,padding:10}}/>
-<button onClick={checkCourse}>Check course</button>
+<button onClick={()=>checkCourse(val)}>Check course</button>
 
 <div style={{border:"1px solid red"}}>
     <input value={attr} onChange={(e)=>{
         let val=e.target.value.toUpperCase().trim()
         setAttr(val)
     }} placeholder="attribute"style={{fontSize:25,padding:10}}/>
-    {attr_list.filter(element=>{
+    {false && attr_list.filter(element=>{
         
         return attr.trim() !="" &&element.indexOf(attr) !=-1
        }).length>0&&<div style={{left:20,height:500,overflowY:"scroll",padding:10, position:"absolute",zIndex:1000, width:200,borderRadius:10, border:"2px solid green",background:"rgba(250,200,100,0.8)"}}>
@@ -273,7 +376,7 @@ export default function BasicTreeView(){
     
 </div>
 
-   <button onClick={checkSection}>Check section</button>
+   <button onClick={()=>checkSection(attr)}>Check section</button>
  <div>{msg}</div>
  {courses&&courses.length>0&&<table>
     <tr>
@@ -284,7 +387,7 @@ export default function BasicTreeView(){
             Course name
         </th>
         <th>
-            Course times
+            Course attribute
         </th>
         <th>
             In Schedule?
@@ -296,6 +399,7 @@ export default function BasicTreeView(){
             Times
         </th>
         <th>Has conflict</th>
+        <th>Credits hourse</th>
     </tr>
     {courses.map(el=>{
                
@@ -314,6 +418,7 @@ export default function BasicTreeView(){
              
         }
         if(isInSchedule || isConflict) return <></>
+        console.log(el)
         return <tr>
             <td>{el[1]}</td>
             <td>{el[2]}</td>
@@ -321,12 +426,13 @@ export default function BasicTreeView(){
             <td>{isInSchedule?"Yes":"No"}</td>
             
             <td><button disabled={isInSchedule || isConflict} onClick={()=>{
-                putEventInSchedule(el[1],el[2],el[7])
+                putEventInSchedule(el[1],el[2],el[7],Number(el[5]))
             }}>Put in scheudle</button></td>
             <td>{el[7]}</td>
             <td>
                {isConflict?"Yes":"No"}
             </td>
+            <td>{Number(el[5])}</td>
         </tr>
     })}
     </table>}
@@ -346,8 +452,9 @@ export default function BasicTreeView(){
                   </span>
                   </Tooltip>   }
 
-                {isChild &&<span   style={{ height:200, border:"2px solid rgb(200,215,255)",borderRadius:5,padding:10,paddingLeft:isChild?50:0 ,background:isChild?"white":"rgb(200,230,230)"}} className="name">
-                    {element.name}  
+                {isChild &&<span  
+                style={{ height:200, border:"2px solid rgb(200,215,255)",borderRadius:5,padding:10,paddingLeft:isChild?50:0 ,background:isChild?"white":"rgb(200,230,230)"}} className="name">
+                    {addLinks(element.name)}  
                    
                   </span>}
       </div>
@@ -355,7 +462,7 @@ export default function BasicTreeView(){
 }
   />
 
-
+<h1>Total credits : {totalCredits()}</h1>
 <FullCalendar
 initialDate={"2024-11-17"}
     ref={calendarRef}
@@ -365,6 +472,7 @@ initialDate={"2024-11-17"}
       headerToolbar={{ left: "prev,next today", center: "title", right: "timeGridWeek,timeGridDay" }}
       dayHeaderContent={(day) =>day.text.substring(0,3)}
       height={"100%"}
+      
     />
   </div>
 }

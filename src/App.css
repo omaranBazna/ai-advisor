@@ -1,3 +1,7 @@
+.hoverable:hover{
+  text-decoration: underline;
+}
+
 .App {
   text-align: center;
 }
