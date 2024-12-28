@@ -201,7 +201,8 @@ export default function BasicTreeView(){
       areas.shift()
       areas.shift()
 
-      areas =await filterAreas(areas)
+      areas = await filterAreas(areas)
+      areas = areas.filter(item=>item.courses&&item.courses.length>0)
      
       
     setToken(response.data.token);
@@ -212,7 +213,7 @@ export default function BasicTreeView(){
                 return {name:el_2,level:2}
             })
           
-            return {name:el.caption,level:1,children}
+            return {name:el.caption.replace("Area Name: ",""),level:1,children}
         })}
       })
     } catch (error) {
@@ -356,7 +357,7 @@ export default function BasicTreeView(){
     }} placeholder="checkcourse" style={{fontSize:25,padding:10}}/>
 <button onClick={()=>checkCourse(val)}>Check course</button>
 
-<div style={{border:"1px solid red"}}>
+<div>
     <input value={attr} onChange={(e)=>{
         let val=e.target.value.toUpperCase().trim()
         setAttr(val)
@@ -372,10 +373,10 @@ export default function BasicTreeView(){
         return <div style={{margin:10,background:"rgba(255,255,255,0.5)",padding:5,borderRadius:5}}>{element}</div>
        })}
     </div>}
-    
+     <button onClick={()=>checkSection(attr)}>Check attribute</button>
 </div>
 
-   <button onClick={()=>checkSection(attr)}>Check section</button>
+  
  <div>{msg}</div>
  {courses&&courses.length>0&&<table>
     <tr>
