@@ -4,7 +4,10 @@ import FileDropComponent from './components/FileUploadComponent';
 import StudentCourses from './components/StudentCourses';
 import WeeklySchedule from './components/WeeklySchedule';
 
-import BasicTreeView from './components/BasicTreeView';
+import StudentEvaluationPage from './pages/StudentEvaluationPage';
+
+
+
 function convertTo24HourFormat(timeString) {
   if(timeString.trim()==="") return "00:00"
   timeString = timeString.trim()
@@ -64,7 +67,7 @@ function App() {
   const setEventsList = (data)=>{
     
     //data = data.filter((element,index)=>index<50)
-    console.log(data);
+
     setAllEvents(data)
     
     let selected_courses = courses.filter((item,index)=>{
@@ -131,7 +134,7 @@ return [1,el["course_code"],el["course_name"],"None",el["course_times"]]
   setAllEvents(elements);
 
   }
-  return <BasicTreeView/>
+  return <StudentEvaluationPage />
   return (
     <div className="App" style={{display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column"}}>
       <h1> Upload student evaluation </h1>
