@@ -104,7 +104,7 @@ export const totalCredits = (events) => {
     return total
 }
 
-export const addLinks = (text ,setAttr,checkAttr,setCourse,checkCourse)=>{
+export const addLinks = (text ,setAttr,setCourse)=>{
     const att_regex = /\[(.*?)\]/g;
     const replacedText = text.replace(att_regex,(match,p1)=>{
         return `|_${p1}|`
@@ -122,13 +122,13 @@ export const addLinks = (text ,setAttr,checkAttr,setCourse,checkCourse)=>{
             element=element.substring(1)
             return <span className="hoverable" onClick={()=>{
                 setAttr(element)
-                checkAttr(element)
+                //checkAttr(element)
             }} style={{color:"red"}}>{element}</span>
         }else if(element[0] === "+"){
             element=element.substring(1)
             return <span className="hoverable" onClick={()=>{
                 setCourse(element)
-                checkCourse(element)
+                //checkCourse(element)
             }} style={{color:"green"}}>{element}</span>
         }
         return <span>{element}</span>

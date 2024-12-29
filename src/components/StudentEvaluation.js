@@ -1,13 +1,11 @@
 import FileUploadComponent from "./FileUploadComponent"
 import SelectionInput from "./SelectionInput"
 import { useState } from "react"
-import StudentCoursesTreeView from "./StudentCoursesTreeView"
 
-const StudentEvaluation = ({ folder ,setFolder,setCourses}) =>{
+const StudentEvaluation = ({ setFolder,setCourses  ,course,setCourse,attr,setAttr}) =>{
 
     const [token,setToken] = useState([]);
-    const [course,setCourse] = useState("");
-    const [attr,setAttr] = useState("");
+
     const [msg,setMsg] = useState("");
 
 

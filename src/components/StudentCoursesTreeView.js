@@ -3,7 +3,7 @@ import { Tooltip} from '@trendmicro/react-tooltip';
 import '@trendmicro/react-tooltip/dist/react-tooltip.css';
 import { addLinks } from "./utils";
 
-const StudentCoursesTreeView = ({folder,setAttr,checkAttr,setCourse,checkCourse}) =>{
+const StudentCoursesTreeView = ({folder,setAttr,setCourse}) =>{
     const data = flattenTree(folder);
 
     const nodeRenderer = ({ element, getNodeProps, level, handleSelect }) => {
@@ -17,7 +17,7 @@ const StudentCoursesTreeView = ({folder,setAttr,checkAttr,setCourse,checkCourse}
                     </span>
                   </Tooltip>}
                       {isChild &&<span style={{ height:200, border:"2px solid rgb(200,215,255)",borderRadius:5,padding:10,paddingLeft:isChild?50:0 ,background:isChild?"white":"rgb(200,230,230)"}} className="name">
-                      {addLinks(element.name,setAttr,checkAttr,setCourse,checkCourse)}    
+                      {addLinks(element.name,setAttr,setCourse)}    
                     </span>}
               </div>
     }

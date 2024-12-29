@@ -26,7 +26,7 @@ const TableHeader = () => {
 }
 
 const TableBody = ({courses,events,setEvents}) => {
-    
+
     const putEventInSchedule = (code,subject,time,credits) => {
         const timesArray = getEventTime(time);
         for(let element of timesArray){
@@ -42,7 +42,8 @@ const TableBody = ({courses,events,setEvents}) => {
         }
     }
 
-    const checkIsInSchedule = (code) =>  events.find(item=>item.code === code) !== null
+    const checkIsInSchedule = (code) =>  events.find(item=>item.code === code) !== undefined
+
   
     const checkConflict = (time) =>{
         const times = getEventTime(time)
@@ -57,31 +58,33 @@ const TableBody = ({courses,events,setEvents}) => {
     }
 
     const TableRow = (el) =>{
-        const [_0,course_code,course_name,_3,course_attr,course_credits,_6,course_time]=el;
-                   
+
+        if(!el || !el.el) {
+            return <></>
+        }
+        const [_0,course_code,course_name,_3,course_attr,course_credits,_6,course_time]=el.el;  
+
         const isInSchedule = checkIsInSchedule(course_code);
         const isConflict  =  checkConflict(course_time);
 
-        if(isInSchedule || isConflict) return <></>
+        if(isInSchedule || isConflict) {
+            return <></>
+        }
 
         return <tr>
             <td>{course_code}</td>
             <td>{course_name}</td>
             <td>{course_attr}</td>
-
-            
             <td>
             <button onClick={()=>{
                 putEventInSchedule(course_code,course_name,course_time,Number(course_credits))
             }}>Put in scheudle</button>
-            
             </td>
             <td>{course_time}</td>
-           
             <td>{Number(course_credits)}</td>
         </tr>
     }
-
+   
     return <>
     {courses.map(el=>{
         return <TableRow el={el} />
@@ -89,7 +92,7 @@ const TableBody = ({courses,events,setEvents}) => {
 
 }
 const CourseTable = ({courses,events,setEvents}) => {
-
+ 
     if(!courses || courses.length === 0){
         return <div> No course available </div>
     }
