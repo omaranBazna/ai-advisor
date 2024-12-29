@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './App.css';
-import FileDropComponent from './components/FileDropComponent';
+import FileDropComponent from './components/FileUploadComponent';
 import StudentCourses from './components/StudentCourses';
 import WeeklySchedule from './components/WeeklySchedule';
 

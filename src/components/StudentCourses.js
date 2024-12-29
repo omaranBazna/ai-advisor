@@ -15,7 +15,7 @@ export default function StudentCourses({fillSchedule,studentCourses,setStudentCo
         let details = el.details
        
 
-        if(details.length==0){
+        if(details.length === 0){
           flatted.push([name,"-","-","-","-","-","-"])
           continue
         }
