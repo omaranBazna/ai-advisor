@@ -18,28 +18,7 @@ const colors = [
   "#FFD7DA", "#DAF7DA", "#FFD7DA", "#F0A6DA", "#FFD7A6", "#F0D7DA", "#FFF7DA", "#F0A6FA", "#F5D7A6", "#F027DA", "#C02CDC"
 ];
 
-function convertTo24HourFormat(timeString) {
-  if(timeString.trim()==="") return "00:00"
-  timeString = timeString.trim()
-  const [time, period] = timeString.split(" ");
-  let [hours, minutes] = time.split(":").map(Number);
 
-
-  if (period.toLowerCase() === "pm" && hours !== 12) {
-    hours += 12;  // Convert PM times except for 12 PM to 24-hour format
-  }
-  
-  if (period.toLowerCase() === "am" && hours === 12) {
-    hours = 0;  // Convert 12 AM to 00:00
-  }
-
-  // Format the hours and minutes to ensure they are two digits
-  
-  const formattedHours = hours.toString().padStart(2, "0");
-  const formattedMinutes = minutes.toString().padStart(2, "0");
-
-  return `${formattedHours}:${formattedMinutes}`;
-}
 const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
   setAllEvents,setEventsList,selected,setSelected,selected_years,setSelectedYears}) => {
   const calendarRef = useRef(null);
@@ -53,7 +32,7 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
     calendarApi.gotoDate(date);  // Date format: 'YYYY-MM-DD'
   };
   
-  let days_dic={
+  const days_dic={
     "Monday":"2024-11-18",
     "Tuesday":"2024-11-19",
     "Wednesday":"2024-11-20",
@@ -62,35 +41,30 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
     "Saturday":"2024-11-23",
     "Sunday":"2024-11-24"
   }
-
- 
-  
- 
  
   const updateSelection = ()=>{
     setEventsList(loadedEvents)
   }
   async function loadEvents(){
-    let {data} = await axios.get(server_end_point);
+    const {data} = await axios.get(server_end_point);
     setLoadedEvents(data);
     setEventsList(data);
+    
   }
 
   async function loadCourses(){
     let {data} =await axios.get(server_end_point_courses)
-
-    console.log(data);
     data =[{value:"all",key:"all"},...data]
     setCourses(data)
+
   }
   useEffect(()=>{
-   // updateSelection()
+    updateSelection()
   },[selected,selected_years])
   useEffect(()=>{
-   
     moveToDate(1732036563048)
-    loadEvents()
-    loadCourses()
+    loadEvents();
+    loadCourses();
   },[])
 
  
@@ -103,7 +77,7 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
     for(let ele of all_events){
       if(ele[1]){
       let sub = ele[1].split(" ")[0].toLowerCase()
-      if(sub==value.toLowerCase()) {
+      if(sub===value.toLowerCase()) {
         counter +=1;
      }
     }
@@ -115,7 +89,16 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
   }
   return (
     <div>
-      <div style={{display:"flex",alignItems:"center",justifyContent:"start",border:"1px solid black",margin:20,padding:10}}>
+      <div style={
+        {
+          display:"flex",
+          alignItems:"center",
+          justifyContent:"start",
+          border:"1px solid black",
+          margin:20,
+          padding:10,
+        }
+        }>
         <div>
           <input onClick={()=>{
             if(selected_years.find(item=>item==1)){
@@ -165,9 +148,20 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
       </div>
     <div style={{width:"100%",height:"100vh",display:"flex",justifyContent:"space-between",alignItems:"start"}}>
       
-      <div style={{width:"20%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
+      <div style={
+        {
+          width:"20%",
+          display:"flex",
+          flexDirection:"column",
+          alignItems:"center",
+          justifyContent:"start",
+          height:"100vh",
+          overflowY:"scroll"
+        }
+        }>
        {courses.map((item,index)=>{
-        let count = countElements(events,item.key)
+
+        const count = countElements(events,item.key)
         if(count>0){
         return <div style={{display:"flex",justifyContent:"start",alignItems:"center",gap:10,width:"100%"}}>
           
@@ -190,7 +184,7 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
 })}
           
       </div>
-    <div style={{width:"80%",height:"100vh",border:"2px solid red"}}>
+    <div style={{width:"80%",height:"100vh"}}>
     <FullCalendar
     ref={calendarRef}
       plugins={[timeGridPlugin]}

@@ -65,11 +65,12 @@ export const checkConflict = (event1,event2) => {
 }
 
 export const getEventTime = (time)=>{
+    console.log(time);
+    console.log(typeof time);
+    console.log("------------")
     time = time.split(",")
     let days= time[0].split("-")
-
     let timesArr=[]
-    
     for(let day of days){
     day = day.trim()
 

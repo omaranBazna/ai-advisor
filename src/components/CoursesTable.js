@@ -28,6 +28,7 @@ const TableHeader = () => {
 const TableBody = ({courses,events,setEvents}) => {
 
     const putEventInSchedule = (code,subject,time,credits) => {
+        //return console.log(time)
         const timesArray = getEventTime(time);
         for(let element of timesArray){
             setEvents((old)=>{
