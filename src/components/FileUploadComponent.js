@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const FileUploadComponent= ({token,setFolder,setToken }) => {
 
-  const checkSingleCourse=async(val)=>{
+  const checkSingleCourse=async(val,token)=>{
         
     return await fetch("http://127.0.0.1:5000/check_course",{
            method:"POST",
@@ -19,24 +19,29 @@ const FileUploadComponent= ({token,setFolder,setToken }) => {
    
 
 
-  const filterAreas = async(areas)=>{
+  const filterAreas = async(areas,token)=>{
     let newAreas = []
     for(let area of areas){
         let newArea={
             caption:area.caption,
         }
         let courses = area.courses;
+      
         let newCourses= []
         for(let course of courses){
             course = course.trim()
             let regex = /^\b[A-Z]{2,4}\s+\d{4}\b$/;
+            
             if (regex.test(course)) {
-                let result = await checkSingleCourse(course)
+         
+                let result = await checkSingleCourse(course,token)
+         
                 if(result){
                     newCourses.push(course);
                 }
             }else newCourses.push(course);
         }
+     
         newArea.courses = newCourses
         newAreas.push(newArea)
     }
@@ -58,12 +63,17 @@ const FileUploadComponent= ({token,setFolder,setToken }) => {
           "Content-Type": "multipart/form-data", // Explicitly set for Axios
         },
       });
+
       let areas = response.data.areas.filter(item=>item.courses&&item.courses.length>0);
+ 
       areas.shift()
       areas.shift()
-      areas = await filterAreas(areas)
+
+      console.log(response.data.token)
+      areas = await filterAreas(areas,response.data.token);
+      console.log(areas);
       areas = areas.filter(item=>item.courses&&item.courses.length>0)
-     
+  
     setToken(response.data.token);
       setFolder((old)=>{
         return {...old,children:areas.map(el=>{
@@ -80,6 +90,9 @@ const FileUploadComponent= ({token,setFolder,setToken }) => {
       alert(`Error: ${error.response?.data || error.message}`);
     }
   };
+
+
+
 
    return <div style={{
     display:"flex",
