@@ -105,9 +105,18 @@ const CoursesSchedulePage = () =>{
         <div className="App" style={{display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column"}}>
            <div style={{width:"100%",height:"100vh"}}>
            <WeeklySchedule 
-           selected={selected} setSelected={setSelected}
-           selected_years={selected_years}   setSelectedYears={setSelectedYears}
-           setEventsList={setEventsList} all_events={all_events} setAllEvents={setAllEvents} courses={courses} setCourses={setCourses}   events = {events}  setEvents={setEvents}/>
+           selected={selected} 
+           setSelected={setSelected}
+           selected_years={selected_years}   
+           setSelectedYears={setSelectedYears}
+           setEventsList={setEventsList} 
+           all_events={all_events} 
+           setAllEvents={setAllEvents}
+           courses={courses}
+           setCourses={setCourses}   
+           events = {events}  
+           setEvents={setEvents}
+           />
            </div>
         
         </div>

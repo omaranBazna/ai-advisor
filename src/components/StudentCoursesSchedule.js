@@ -7,7 +7,8 @@ const StudentCoursesSchedule = ({events,setEvents}) =>{
     const calendarRef = useRef(null);
     return <>
     <h1>Total credits : {totalCredits(events)}</h1>
-    <div style={{width:"50%",height:"1000px"}}> 
+    <div style={{width:"100%",display:"flex"}}>
+    <div style={{width:"80%",height:"1000px"}}> 
     <FullCalendar
         initialDate={"2024-11-17"}
         ref={calendarRef}
@@ -26,6 +27,30 @@ const StudentCoursesSchedule = ({events,setEvents}) =>{
         }}
     
     />
+    
+    </div>
+    <div style={{width:"20%"}}>
+        {events.map(item=>{  
+            if(item.NoSpecificTime){
+
+                return <div
+                onClick={()=>{
+                    setEvents((old)=>{
+                        return old.filter(el=>el.code != item.code)
+                        
+                        })
+                }}
+                
+                style={{
+                    margin:10,
+                    background:"lightgreen",
+                    borderRadius:2,
+                    padding:10
+                }}>{item.title}  </div>
+            }
+            return <></>
+        })}
+    </div>
     </div>
     </>
 }

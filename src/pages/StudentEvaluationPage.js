@@ -18,7 +18,7 @@ export default function StudentEvaluationPage(){
 
    
 
-    return   <div style={{height:1000}}>
+    return   <div >
 
 <StudentEvaluation  
     course={course} 
@@ -30,6 +30,7 @@ export default function StudentEvaluationPage(){
 />
 <StudentCoursesTreeView setAttr={setAttr} setCourse={setCourse} folder={folder} />
 <CourseTable courses ={courses} events={events} setEvents={setEvents}/>
+
 <StudentCoursesSchedule  events={events} setEvents={setEvents}  />
   </div>
 }

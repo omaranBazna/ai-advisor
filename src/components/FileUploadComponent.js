@@ -81,10 +81,24 @@ const FileUploadComponent= ({token,setFolder,setToken }) => {
     }
   };
 
-   return <form onSubmit={handleFileUpload} method="POST" enctype="multipart/form-data"> 
+   return <div style={{
+    display:"flex",
+    alignItems:"center",
+    justifyContent:"center",
+    flexDirection:"column",
+    gap:10,
+    width:"100%",
+    border:"2px solid black",
+    borderRadius:10,
+    margin:0,
+    padding:10
+   }}>
+    <h3>Upload the student evaluation page in {"(.mhtml)"} format</h3>
+    <form onSubmit={handleFileUpload} method="POST" enctype="multipart/form-data"> 
         <input type="file" name="file" multiple /> 
         <input type = "submit" value="Upload"/> 
-    </form> 
+    </form>
+   </div>  
 };
 
 export default FileUploadComponent;

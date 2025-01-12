@@ -29,6 +29,7 @@ const IsTimeInBetween = (time,start,end) => {
 }
 
 const convertTo24HourFormat = (timeString) => {
+  
     if(timeString.trim()==="") return "00:00"
     timeString = timeString.trim()
     const [time, period] = timeString.split(" ");
@@ -65,30 +66,43 @@ export const checkConflict = (event1,event2) => {
 }
 
 export const getEventTime = (time)=>{
-    console.log(time);
-    console.log(typeof time);
-    console.log("------------")
+    
+    if(typeof time =="object"){
+        
+        time = ",-"
+    }
     time = time.split(",")
     let days= time[0].split("-")
     let timesArr=[]
+    
     for(let day of days){
     day = day.trim()
+ 
 
 
     let day_date = days_dic[day]
     let times = time[1].split("-")
+ 
+   
     let [start,end] =times
-    start= convertTo24HourFormat(start)
+
+
+    start= convertTo24HourFormat(start) 
+    
     end = convertTo24HourFormat(end)
+   
     let start_date = day_date+"T"+start
     let end_date = day_date+"T"+end
     timesArr.push({
         start:start_date,
             end:end_date,
     })
+  
 
   }
-
+  
+  
+   
   return timesArr
 }
 

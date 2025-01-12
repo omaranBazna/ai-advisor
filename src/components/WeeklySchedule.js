@@ -24,7 +24,8 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
   const calendarRef = useRef(null);
 
 
-  const [loadedEvents,setLoadedEvents] = useState([])
+  const [loadedEvents,setLoadedEvents] = useState([]);
+  const [expanded,setExpanded] = useState(new Set());
 
   const moveToDate = (date) => {
     // Use the FullCalendar instance to navigate to a specific date
@@ -32,15 +33,7 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
     calendarApi.gotoDate(date);  // Date format: 'YYYY-MM-DD'
   };
   
-  const days_dic={
-    "Monday":"2024-11-18",
-    "Tuesday":"2024-11-19",
-    "Wednesday":"2024-11-20",
-    "Thursday":"2024-11-21",
-    "Friday":"2024-11-22",
-    "Saturday":"2024-11-23",
-    "Sunday":"2024-11-24"
-  }
+ 
  
   const updateSelection = ()=>{
     setEventsList(loadedEvents)
@@ -87,6 +80,20 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
    return counter
 
   }
+
+  function listKeyCourses(events,value){
+    if(value==="all") return []
+    const result = [];
+    for(let ele of all_events){
+      if(ele[1]){
+        const sub = ele[1].split(" ")[0].toLowerCase()
+        if(sub===value.toLowerCase()) {
+          result.push(ele);
+        }
+      }
+    }
+   return result;
+  }
   return (
     <div>
       <div style={
@@ -104,18 +111,18 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
             if(selected_years.find(item=>item==1)){
               setSelectedYears(selected_years.filter(item=>item!=1))
             }else{
-                setSelectedYears([1,...selected_years])
+              setSelectedYears([1,...selected_years])
             }
-          }} type="checkbox" checked={selected_years.find(item=>item==1) }/><label>Year one</label>
+          }} type="checkbox" checked={selected_years.find(item=>item==1) }/><label>01 Courses</label>
         </div>
         <div>
           <input onClick={()=>{
             if(selected_years.find(item=>item==2)){
               setSelectedYears(selected_years.filter(item=>item!=2))
             }else{
-                setSelectedYears([2,...selected_years])
+              setSelectedYears([2,...selected_years])
             }
-          }} type="checkbox" checked={selected_years.find(item=>item==2)}/><label>Year two</label>
+          }} type="checkbox" checked={selected_years.find(item=>item==2)}/><label>02 Courses</label>
         </div>
         <div>
           <input onClick={()=>{
@@ -124,7 +131,7 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
             }else{
                 setSelectedYears([3,...selected_years])
             }
-          }} type="checkbox" checked={selected_years.find(item=>item==3)}/><label>Year three</label>
+          }} type="checkbox" checked={selected_years.find(item=>item==3)}/><label>03 Courses</label>
         </div>
         <div>
           <input onClick={()=>{
@@ -133,7 +140,7 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
             }else{
                 setSelectedYears([4,...selected_years])
             }
-          }} type="checkbox" checked={selected_years.find(item=>item==4)}/><label>Year four</label>
+          }} type="checkbox" checked={selected_years.find(item=>item==4)}/><label>04 Courses</label>
         </div>
         <div>
           <input onClick={()=>{
@@ -142,7 +149,7 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
             }else{
                 setSelectedYears([5,...selected_years])
             }
-          }} type="checkbox" checked={selected_years.find(item=>item==5)}/><label>Year five</label>
+          }} type="checkbox" checked={selected_years.find(item=>item==5)}/><label>05 Courses</label>
         </div>
         
       </div>
@@ -163,19 +170,68 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
 
         const count = countElements(events,item.key)
         if(count>0){
-        return <div style={{display:"flex",justifyContent:"start",alignItems:"center",gap:10,width:"100%"}}>
-          
-        
-          <input onClick={()=>{
-          let checked= selected.find(item=>item==index)
-          if(checked){
-            setSelected(selected.filter(item=>item!=index))
-          }else {
-            setSelected([...selected,index])
+        return <div
+        style={{
+          display:"flex",
+          justifyContent:"start",
+          alignItems:"start",
+          gap:10,
+          width:"100%",
+          flexDirection:"column"
+        }}
+        >
+        <div style={
+          {
+            display:"flex",
+            justifyContent:"start",
+            alignItems:"center",
+            gap:10,
+            width:"100%"
           }
-        }} checked={selected.find(item=>item==index)}  type="checkbox" id={item.key} name="course" value={item.key}/><lable>{item.value} ( {countElements(events,item.key)} ) </lable>
-        
-          <div style={{width:15,height:15,background:colors[index]}}></div>
+          }>
+        <input 
+        onClick={
+          ()=>{
+            let checked = selected.find(item=>item==index)
+            if(checked){
+              setSelected(selected.filter(item=>item!=index))
+            }else {
+              setSelected([...selected,index])
+            }
+          }
+        } 
+        checked={selected.find(item=>item==index)}  
+        type="checkbox" 
+        id={item.key} 
+        name="course" 
+        value={item.key}
+        />
+        <lable 
+          onClick={()=>{
+            setExpanded((prev)=>{
+              const newSet = new Set(prev);
+              if(newSet.has(item.key)){
+                newSet.delete(item.key);
+              }else{
+                newSet.add(item.key)
+              }
+              return newSet;
+            })
+          }}
+          style={{
+            cursor:"pointer",
+          }}
+        > {item.value} ( {countElements(events,item.key)} ) </lable>
+        <div style={{width:15,height:15,background:colors[index]}}></div>
+        </div>
+
+        {expanded.has(item.key) && <div style={{paddingLeft:20}}>
+            {listKeyCourses(events,item.key).map(element=>{
+              return <div style={{border:"2px solid black",padding:5}}>
+                {element[2]}
+              </div>
+            })}
+        </div>}
         
         </div>
       }

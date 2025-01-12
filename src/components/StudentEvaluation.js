@@ -9,7 +9,7 @@ const StudentEvaluation = ({ setFolder,setCourses  ,course,setCourse,attr,setAtt
     const [msg,setMsg] = useState("");
 
 
-  return <>
+  return <div style={{width:"100%"}}>
   <FileUploadComponent token={token} setFolder={setFolder} setToken={setToken} />
 
 <SelectionInput 
@@ -20,6 +20,8 @@ const StudentEvaluation = ({ setFolder,setCourses  ,course,setCourse,attr,setAtt
     token = {token}
     attr = {attr}
     setAttr = {setAttr}
+
+    
 />
 
 <div>{msg}</div>
@@ -27,7 +29,7 @@ const StudentEvaluation = ({ setFolder,setCourses  ,course,setCourse,attr,setAtt
 
 
 
-  </>
+  </div>
 }
 
 export default StudentEvaluation

@@ -4,7 +4,17 @@ import CheckCourseInput from "./CheckCourseInput"
 
 const SelectionInput = ({course,setCourse,setCourses,setMsg , token ,attr,setAttr}) =>{
  
-    return <>
+    return <div style={
+        {
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"space-around",
+            border:"2px solid black",
+            padding:10,
+            margin:10,
+            borderRadius:5
+        }
+        }>
      < CheckCourseInput 
         course={course} 
         setCourse={setCourse} 
@@ -21,7 +31,7 @@ const SelectionInput = ({course,setCourse,setCourses,setMsg , token ,attr,setAtt
         setCourses = {setCourses} 
         setMsg = {setMsg}
     />
-    </>
+    </div>
 }
 
 export default SelectionInput

@@ -10,11 +10,11 @@ const Navbar = () => {
             display:"flex",
             justifyContent:"center",
             alignItems:"center",
-            gap:15,
+            gap:50,
             padding:10
         }
         }>
-    <Link to="/">Home</Link>
+    <Link to="/">Courses Schedule</Link>
     <Link to="/student-evaluation">Student</Link>
     </div>
 
