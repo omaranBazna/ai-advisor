@@ -20,7 +20,10 @@ const colors = [
 
 
 const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
-  setAllEvents,setEventsList,selected,setSelected,selected_years,setSelectedYears}) => {
+  setAllEvents,setEventsList,selected,setSelected,selected_years,setSelectedYears,
+selectedSet,setSelectedSet
+
+}) => {
   const calendarRef = useRef(null);
 
 
@@ -41,6 +44,7 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
   async function loadEvents(){
     const {data} = await axios.get(server_end_point);
     setLoadedEvents(data);
+    console.log(data);
     setEventsList(data);
     
   }
@@ -53,7 +57,9 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
   }
   useEffect(()=>{
     updateSelection()
-  },[selected,selected_years])
+  },[selected,selectedSet,selected_years])
+
+
   useEffect(()=>{
     moveToDate(1732036563048)
     loadEvents();
@@ -167,6 +173,7 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
         }
         }>
        {courses.map((item,index)=>{
+       const list=  listKeyCourses(events,item.key)
 
         const count = countElements(events,item.key)
         if(count>0){
@@ -192,15 +199,25 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
         <input 
         onClick={
           ()=>{
-            let checked = selected.find(item=>item==index)
+            let checked = list.some((el)=>selectedSet.has(el[1]+","+el[6]));
+           
             if(checked){
-              setSelected(selected.filter(item=>item!=index))
+              setSelectedSet((old)=>{
+                let newSet = new Set(old);
+                 list.forEach(el=>newSet.delete(el[1]+","+el[6]));
+                 return newSet;
+              })
+             
             }else {
-              setSelected([...selected,index])
+              setSelectedSet((old)=>{
+                let newSet = new Set(old);
+                 list.forEach(el=>newSet.add(el[1]+","+el[6]));
+                 return newSet;
+              })
             }
           }
         } 
-        checked={selected.find(item=>item==index)}  
+        checked={list.some((el)=>selectedSet.has(el[1]+","+el[6]))}  
         type="checkbox" 
         id={item.key} 
         name="course" 
@@ -226,9 +243,26 @@ const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
         </div>
 
         {expanded.has(item.key) && <div style={{paddingLeft:20}}>
-            {listKeyCourses(events,item.key).map(element=>{
-              return <div style={{border:"2px solid black",padding:5}}>
-                {element[2]}
+         
+            {list.map(element=>{
+
+              return <div 
+              onClick={()=>{
+              
+                setSelectedSet((old)=>{
+                  let newSet=new Set(old);
+                  let key = element[1]+","+element[6];
+                  if(old.has(key)){
+                    newSet.delete(key);
+                  }else newSet.add(key);
+
+                  return newSet;
+                })
+              }}
+              style={{border:"2px solid black",padding:5}}
+              >
+               
+                {element[2]} , section :{element[6]}   {selectedSet.has(element[1]+","+element[6])?"✅":"❌"}
               </div>
             })}
         </div>}

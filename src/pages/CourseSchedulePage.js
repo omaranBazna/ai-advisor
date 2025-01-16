@@ -52,18 +52,22 @@ const CoursesSchedulePage = () =>{
     const [events,setEvents] = useState([]);
     const [courses, setCourses]= useState([]);
     const [all_events,setAllEvents] = useState([]);
+    const [selectedSet,setSelectedSet] = useState(new Set())
     
     const setEventsList = (data)=>{
     setAllEvents(data)
+   
     const selected_courses = courses.filter((item,index)=>{
         return selected.find(item=>item===index)
     })
+  
       
     data = data.filter(element=>{
         const sub = element[1].split(" ")[0];    
         const selected_obj = selected_courses.find(item=>item.key.toLowerCase()==sub.toLowerCase());
         const year = Number(element[1].split(" ")[1][0]);
-        if(selected_obj && selected_years.find(item=>item==year)){
+
+        if(selectedSet.has(element[1]+","+element[6])  && selected_years.find(item=>item==year)){
             return true
         }
         return false;
@@ -71,7 +75,7 @@ const CoursesSchedulePage = () =>{
     
     const arr_elements = []
     data.forEach((element,index)=>{
-        let title = element[2]
+        let title = element[2] +",section: "+element[6]
         let time = element.at(-1).split(",")
         let days= time[0].split("-")
         for(let day of days){
@@ -116,6 +120,8 @@ const CoursesSchedulePage = () =>{
            setCourses={setCourses}   
            events = {events}  
            setEvents={setEvents}
+           selectedSet={selectedSet}
+           setSelectedSet = {setSelectedSet}
            />
            </div>
         
