@@ -1,10 +1,11 @@
 import axios from 'axios';
+import { server_url } from '../utils';
 
 const FileUploadComponent= ({token,setFolder,setToken }) => {
 
   const checkSingleCourse=async(val,token)=>{
         
-    return await fetch("http://127.0.0.1:5000/check_course",{
+    return await fetch(server_url+"/check_course",{
            method:"POST",
            headers:{
            'content-type':"application/json",
@@ -58,7 +59,7 @@ const FileUploadComponent= ({token,setFolder,setToken }) => {
     const formData = new FormData();
     formData.append("file", file); // The key 'file' must match Flask's expected key
     try {
-      const response = await axios.post("http://127.0.0.1:5000/upload", formData, {
+      const response = await axios.post(server_url+"/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data", // Explicitly set for Axios
         },

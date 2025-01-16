@@ -3,8 +3,9 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import axios from "axios"
 import { useState,useEffect,useRef } from "react";
-const server_end_point = "http://127.0.0.1:5000/data"
-const server_end_point_courses = "http://127.0.0.1:5000/courses"
+import { server_url } from "../utils";
+const server_end_point = server_url+"/data"
+const server_end_point_courses = server_url+"/courses"
 
 const colors = [
   "#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#FFC300", "#DAF7A6", "#581845", "#900C3F",
