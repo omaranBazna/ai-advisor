@@ -7,17 +7,22 @@ import { server_url } from "../utils";
 const server_end_point = server_url+"/data"
 const server_end_point_courses = server_url+"/courses"
 
-const colors = [
-  "#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#FFC300", "#DAF7A6", "#581845", "#900C3F",
-  "#C70039", "#FF5733", "#FFC300", "#DAF7A6", "#33FF57", "#33FFF5", "#8D33FF", "#338DFF",
-  "#F033FF", "#FF33F0", "#FF5733", "#FF8033", "#33FF80", "#80FF33", "#8033FF", "#3380FF",
-  "#F0FF33", "#FF3380", "#FF338D", "#57FF33", "#33FF57", "#FF5733", "#FFC300", "#581845",
-  "#900C3F", "#C70039", "#DAF7A6", "#DA33FF", "#DAFF33", "#FFD733", "#57FFD7", "#A6FFDA",
-  "#A6DAFF", "#FF5733", "#FF8033", "#33FF80", "#8033FF", "#3380FF", "#F0FF33", "#FF3380",
-  "#FF338D", "#A6FFDA", "#FFDA33", "#57FF33", "#57A6FF", "#DA5733", "#A6C7FF", "#D7DAFF",
-  "#DA57FF", "#A6DAFF", "#F0A6FF", "#A6DAF7", "#FFD7A6", "#57DAF7", "#A6DAFF", "#A6D7FF",
-  "#FFD7DA", "#DAF7DA", "#FFD7DA", "#F0A6DA", "#FFD7A6", "#F0D7DA", "#FFF7DA", "#F0A6FA", "#F5D7A6", "#F027DA", "#C02CDC"
-];
+const colors =[
+  "#FF5733", "#FF6433", "#FF7133", "#FF7E33", "#FF8B33", "#FF9833", "#FFA533", "#FFB233",
+  "#FFBF33", "#FFCC33", "#FFD933", "#FFE633", "#FFF333", "#E6FF33", "#D9FF33", "#CCFF33",
+  "#BFFF33", "#B2FF33", "#A6FF33", "#99FF33", "#8CFF33", "#7FFF33", "#72FF33", "#66FF33",
+  "#59FF33", "#4CFF33", "#3FFF33", "#33FF3D", "#33FF4A", "#33FF57", "#33FF64", "#33FF71",
+  "#33FF7E", "#33FF8B", "#33FF98", "#33FFA5", "#33FFB2", "#33FFBF", "#33FFCC", "#33FFD9",
+  "#33FFE6", "#33FFF3", "#33FFFF", "#33E6FF", "#33D9FF", "#33CCFF", "#33BFFF", "#33B2FF",
+  "#3399FF", "#338CFF", "#337FFF", "#3372FF", "#3366FF", "#3359FF", "#334CFF", "#333FFF",
+  "#3D33FF", "#4A33FF", "#5733FF", "#6433FF", "#7133FF", "#7E33FF", "#8B33FF", "#9833FF",
+  "#A533FF", "#B233FF", "#BF33FF", "#CC33FF", "#D933FF", "#E633FF", "#F333FF", "#FF33FF",
+  "#FF33E6", "#FF33D9", "#FF33CC", "#FF33BF", "#FF33B2", "#FF3399", "#FF338C", "#FF337F",
+  "#FF3372", "#FF3366", "#FF3359", "#FF334C", "#FF333F", "#FF3D33", "#FF4A33", "#FF5733",
+  "#FF6433", "#FF7133", "#FF7E33", "#FF8B33", "#FF9833", "#FFA533", "#FFB233", "#FFBF33",
+  "#FFCC33", "#FFD933", "#FFE633", "#FFF333"
+]
+
 
 
 const WeeklySchedule = ({events,setEvents,courses, setCourses,all_events,
@@ -93,6 +98,9 @@ selectedSet,setSelectedSet
     const result = [];
     for(let ele of all_events){
       if(ele[1]){
+       
+        let year = ele[1].split(" ")[1][0];
+        if(!selected_years.find(el=>el==year)) continue;
         const sub = ele[1].split(" ")[0].toLowerCase()
         if(sub===value.toLowerCase()) {
           result.push(ele);
@@ -101,6 +109,7 @@ selectedSet,setSelectedSet
     }
    return result;
   }
+  
   return (
     <div>
       <div style={
@@ -113,6 +122,15 @@ selectedSet,setSelectedSet
           padding:10,
         }
         }>
+           <div>
+          <input onClick={()=>{
+            if(selected_years.find(item=>item==0)){
+              setSelectedYears(selected_years.filter(item=>item!=0))
+            }else{
+              setSelectedYears([0,...selected_years])
+            }
+          }} type="checkbox" checked={selected_years.find(item=>item==1) }/><label>00 Courses</label>
+        </div>
         <div>
           <input onClick={()=>{
             if(selected_years.find(item=>item==1)){
@@ -158,6 +176,36 @@ selectedSet,setSelectedSet
             }
           }} type="checkbox" checked={selected_years.find(item=>item==5)}/><label>05 Courses</label>
         </div>
+
+        <div>
+          <input onClick={()=>{
+            if(selected_years.find(item=>item==6)){
+              setSelectedYears(selected_years.filter(item=>item!=6))
+            }else{
+              setSelectedYears([6,...selected_years])
+            }
+          }} type="checkbox" checked={selected_years.find(item=>item==6) }/><label>06 Courses</label>
+        </div>
+
+        <div>
+          <input onClick={()=>{
+            if(selected_years.find(item=>item==7)){
+              setSelectedYears(selected_years.filter(item=>item!=7))
+            }else{
+              setSelectedYears([7,...selected_years])
+            }
+          }} type="checkbox" checked={selected_years.find(item=>item==7) }/><label>07 Courses</label>
+        </div>
+
+        <div>
+          <input onClick={()=>{
+            if(selected_years.find(item=>item==8)){
+              setSelectedYears(selected_years.filter(item=>item!=8))
+            }else{
+              setSelectedYears([8,...selected_years])
+            }
+          }} type="checkbox" checked={selected_years.find(item=>item==8) }/><label>08 Courses</label>
+        </div>
         
       </div>
     <div style={{width:"100%",height:"100vh",display:"flex",justifyContent:"space-between",alignItems:"start"}}>
@@ -176,7 +224,8 @@ selectedSet,setSelectedSet
        {courses.map((item,index)=>{
        const list=  listKeyCourses(events,item.key)
 
-        const count = countElements(events,item.key)
+
+        const count = list.length
         if(count>0){
         return <div
         style={{
@@ -263,7 +312,7 @@ selectedSet,setSelectedSet
               style={{border:"2px solid black",padding:5}}
               >
                
-                {element[2]} , section :{element[6]}   {selectedSet.has(element[1]+","+element[6])?"✅":"❌"}
+                {element[2]} , section :{element[6]} , code : {element[1]}   {selectedSet.has(element[1]+","+element[6])?"✅":"❌"}
               </div>
             })}
         </div>}
@@ -275,7 +324,8 @@ selectedSet,setSelectedSet
 })}
           
       </div>
-    <div style={{width:"80%",height:"100vh"}}>
+    <div style={{width:"80%",height:"100vh",display:"flex",justifyContent:"start",alignItems:"start"}}>
+      <div style={{width:"90%",height:"100vh"}}>
     <FullCalendar
     ref={calendarRef}
       plugins={[timeGridPlugin]}
@@ -284,7 +334,22 @@ selectedSet,setSelectedSet
       headerToolbar={{ left: "prev,next today", center: "title", right: "timeGridWeek,timeGridDay" }}
       dayHeaderContent={(day) =>day.text.substring(0,3)}
       height={"100%"}
-    />
+    /></div>
+    <div style={{width:"10%"}}>
+      <h4> Online courses: </h4>
+      {false && <div>
+      {Array.from(selectedSet).filter(item=>{
+        return !events.find(el=>item.indexOf(el.code)>-1)
+      }).filter(item=>{
+        let course= item.split(",")[0].split(" ")[1];
+        let year = parseInt(course[2])
+        console.log(year);
+        return selected_years.find(el=>el==year)
+      }).map(item=>{
+        return <div style={{background:"orange",margin:10}}>{item} </div>
+      })}
+      </div>}
+    </div>
     </div>
     </div>
     </div>

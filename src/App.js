@@ -2,6 +2,7 @@ import './App.css';
 import StudentEvaluationPage from './pages/StudentEvaluationPage';
 import CoursesSchedulePage from './pages/CourseSchedulePage';
 import { Routes,Route } from 'react-router-dom';
+import CreateDBPage from './pages/CreateDBPage';
 import Navbar from './components/Navbar';
 
 
@@ -21,7 +22,8 @@ function App() {
     <Routes>
       <Route path="/" element={<CoursesSchedulePage />} />
       <Route path="/student-evaluation" element={<StudentEvaluationPage />} />
-    </Routes>
+      <Route path="/create-db" element={<CreateDBPage />} />
+     </Routes>
   </div>
 
 }

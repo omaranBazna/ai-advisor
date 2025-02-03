@@ -16,6 +16,7 @@ const Navbar = () => {
         }>
     <Link to="/">Courses Schedule</Link>
     <Link to="/student-evaluation">Student</Link>
+    <Link to="/create-db">Create Semester DB</Link>
     </div>
 
 }

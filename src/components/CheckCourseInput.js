@@ -9,7 +9,7 @@ const CheckCourseInput = ({course,setCourse,setCourses,setMsg,setAttr,token}) =>
     }
     const handleInputChange = e =>{
         const val = e.target.value
-        setCourse(val.toUpperCase().trim())
+        setCourse(val.toUpperCase())
     }
     return <div>
     <input 

@@ -25,16 +25,21 @@ function convertTo24HourFormat(timeString) {
 }
   
 const colors = [
-  "#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#FFC300", "#DAF7A6", "#581845", "#900C3F",
-  "#C70039", "#FF5733", "#FFC300", "#DAF7A6", "#33FF57", "#33FFF5", "#8D33FF", "#338DFF",
-  "#F033FF", "#FF33F0", "#FF5733", "#FF8033", "#33FF80", "#80FF33", "#8033FF", "#3380FF",
-  "#F0FF33", "#FF3380", "#FF338D", "#57FF33", "#33FF57", "#FF5733", "#FFC300", "#581845",
-  "#900C3F", "#C70039", "#DAF7A6", "#DA33FF", "#DAFF33", "#FFD733", "#57FFD7", "#A6FFDA",
-  "#A6DAFF", "#FF5733", "#FF8033", "#33FF80", "#8033FF", "#3380FF", "#F0FF33", "#FF3380",
-  "#FF338D", "#A6FFDA", "#FFDA33", "#57FF33", "#57A6FF", "#DA5733", "#A6C7FF", "#D7DAFF",
-  "#DA57FF", "#A6DAFF", "#F0A6FF", "#A6DAF7", "#FFD7A6", "#57DAF7", "#A6DAFF", "#A6D7FF",
-  "#FFD7DA", "#DAF7DA", "#FFD7DA", "#F0A6DA", "#FFD7A6", "#F0D7DA", "#FFF7DA", "#F0A6FA", "#F5D7A6", "#F027DA", "#C02CDC"
-];
+  "#FF5733", "#FF6433", "#FF7133", "#FF7E33", "#FF8B33", "#FF9833", "#FFA533", "#FFB233",
+  "#FFBF33", "#FFCC33", "#FFD933", "#FFE633", "#FFF333", "#E6FF33", "#D9FF33", "#CCFF33",
+  "#BFFF33", "#B2FF33", "#A6FF33", "#99FF33", "#8CFF33", "#7FFF33", "#72FF33", "#66FF33",
+  "#59FF33", "#4CFF33", "#3FFF33", "#33FF3D", "#33FF4A", "#33FF57", "#33FF64", "#33FF71",
+  "#33FF7E", "#33FF8B", "#33FF98", "#33FFA5", "#33FFB2", "#33FFBF", "#33FFCC", "#33FFD9",
+  "#33FFE6", "#33FFF3", "#33FFFF", "#33E6FF", "#33D9FF", "#33CCFF", "#33BFFF", "#33B2FF",
+  "#3399FF", "#338CFF", "#337FFF", "#3372FF", "#3366FF", "#3359FF", "#334CFF", "#333FFF",
+  "#3D33FF", "#4A33FF", "#5733FF", "#6433FF", "#7133FF", "#7E33FF", "#8B33FF", "#9833FF",
+  "#A533FF", "#B233FF", "#BF33FF", "#CC33FF", "#D933FF", "#E633FF", "#F333FF", "#FF33FF",
+  "#FF33E6", "#FF33D9", "#FF33CC", "#FF33BF", "#FF33B2", "#FF3399", "#FF338C", "#FF337F",
+  "#FF3372", "#FF3366", "#FF3359", "#FF334C", "#FF333F", "#FF3D33", "#FF4A33", "#FF5733",
+  "#FF6433", "#FF7133", "#FF7E33", "#FF8B33", "#FF9833", "#FFA533", "#FFB233", "#FFBF33",
+  "#FFCC33", "#FFD933", "#FFE633", "#FFF333"
+]
+
   
 const days_dic = {
   "Monday":"2024-11-18",
@@ -97,7 +102,8 @@ const CoursesSchedulePage = () =>{
           title:title,
           start:start_date,
           end:end_date,
-          color:colors[index2]
+          color:colors[index2],
+          code:element[1]
         })
       }
     })

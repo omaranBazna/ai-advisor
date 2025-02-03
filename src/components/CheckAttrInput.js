@@ -10,7 +10,7 @@ const CheckAttrInput = ({attr,setAttr,setCourse,token,setCourses,setMsg}) =>{
     }
 
     const handleInputChange = (e) =>{
-        const val=e.target.value.toUpperCase().trim()
+        const val=e.target.value.toUpperCase()
         setAttr(val)
     }
     

@@ -52,7 +52,8 @@ const TableRow = ({el,events,setEvents}) =>{
                     end:element.end,
                     credits,
                     NoSpecificTime,
-                    section
+                    section,
+                    time
                 }]
             })
         }
